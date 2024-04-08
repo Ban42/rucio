@@ -42,7 +42,7 @@ from enum import Enum
 from functools import partial, wraps
 from io import StringIO
 from itertools import zip_longest
-from typing import TYPE_CHECKING, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, Optional, Type, TypeVar, Any
 from urllib.parse import parse_qsl, quote, urlencode, urlparse, urlunparse
 from uuid import uuid4 as uuid
 from xml.etree import ElementTree
@@ -611,16 +611,13 @@ class APIEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def render_json(**data):
-    """ JSON render function
+def render_json(list_=None, **data: Optional[Any]):
+    """ JSON render function for list and dicts
     """
-    return json.dumps(data, cls=APIEncoder)
-
-
-def render_json_list(list_):
-    """ JSON render function for list
-    """
-    return json.dumps(list_, cls=APIEncoder)
+    if list_ is not None:
+        return json.dumps(list_, cls=APIEncoder)
+    else:
+        return json.dumps(data, cls=APIEncoder) 
 
 
 def datetime_parser(dct):
